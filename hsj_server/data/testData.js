@@ -2,9 +2,9 @@ import mysql from "mysql2";
 
 export const pool = mysql.createPool({
   host: "localhost",
-  user: "newlearn",
-  password: "newlearn",
-  database: "newlearn",
+  user: "apiserver",
+  password: "apiserver1234",
+  database: "apiserver",
 });
 
 const db = pool.promise();
@@ -31,16 +31,15 @@ export async function getList(req) {
     return Promise.all(promise).then((results) => results);
   }
 }
-
 /* export async function getList() {
 
-    return db.execute(`select * from userList ${order_desc} limit ${this.page}, ${perPage} `)
+    return db.execute(`sel0ect * from userList ${order_desc} limit ${this.page}, ${perPage} `)
     .then((result)=> result[0]);
 } */
 
 export async function getOne(id) {
   return db
-    .execute("select * from userList where id = ?", [id])
+    .execute(`select * from userList where id = ${id}`)
     .then((result) => result[0][0]);
 }
 
@@ -62,28 +61,41 @@ export async function create(
     .then((result) => getOne(result[0].insertId));
 }
 
+// author_id 없어서 임시로 id 사용 , 추후 변경 가능
 export async function getManyReference(id) {
-  // author_id 없어서 임시로 id 사용 , 추후 변경 가능
-
   return db
-    .execute("select * from userList where id = ?", [id])
+    .execute(`select * from userList where id = ${id}`)
     .then((result) => result[0][0]);
 }
 
 export async function update(name, email, phone, id) {
   return db
-    .execute(
-      //   "UPDATE userList SET name= ? , email = ? , phone = ? , WHERE id= ?",
-      `UPDATE userList SET name= ?, email = ? , phone = ? WHERE id= ?`,
-      [name, email, phone, id]
-    )
+    .execute(`UPDATE userList SET name= ?, email = ? , phone = ? WHERE id= ?`, [
+      name,
+      email,
+      phone,
+      id,
+    ])
     .then(() => getOne(id));
 }
- let temp = [];
-export async function remove(id, prevData) {
+
+// 삭제 구현 환료
+export async function remove(id) {
   return db
-    .execute("DELETE FROM userList WHERE id= ?", [id])
-    .then(() => [{id,prevData}].JSON);
+    .execute(`select * from userlist where id = ${id}`)
+    .then(
+      () => getOne(id),
+      db.execute(`delete from userlist where id = ${id}`)
+    );
+}
+
+export async function removeMany(id) {
+  const promise = ids.map((id) => {
+    return db
+      .execute(`delete from userlist where id = ${id}`)
+      .then((res) => res[0][0]);
+  });
+  return Promise.all(promise).then(() => id);
 }
 
 /* 

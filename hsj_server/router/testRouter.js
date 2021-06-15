@@ -10,8 +10,9 @@ router.get("/posts", testController.getList);
 
 router.get("/posts/:id", testController.getOne);
 
-//  controller에서 getList랑 하나로 합쳐져있음  ,구분 필요
-router.get("/posts?filter=", testController.getMany);
+//  controller에서 getList랑 하나로 합쳐져있음  ,구분 필요 : 어떻게 구분하지?
+// router.get("/posts?filter", testController.getMany);
+
 
 // author_id 가 없어서 임시로 id로 받음
 router.get('/posts/:id' , testController.getManyReference);
@@ -19,10 +20,10 @@ router.get('/posts/:id' , testController.getManyReference);
 // 생성 ㅇㅋ
 router.post('/posts' , testController.create);
 
-// 
+// 업데이트 ㅇㅋ
 router.put('/posts/:id' , testController.update);
 
-
+// 삭제 ㅇㅋ
 router.delete('/posts/:id' , testController.remove);
 
 /* 
